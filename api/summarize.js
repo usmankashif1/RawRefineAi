@@ -19,9 +19,9 @@ module.exports = async function summarize(req, res) {
         return res.status(413).json({ error: `Text must be ${MAX_INPUT_LENGTH} characters or fewer.` });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
     if (!apiKey) {
-        console.error('GEMINI_API_KEY is not configured.');
+        console.error('EXPO_PUBLIC_GEMINI_API_KEY is not configured.');
         return res.status(500).json({ error: 'The summary service is not configured.' });
     }
 
