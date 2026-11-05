@@ -1,5 +1,10 @@
 {
-  "framework": "expo",
-  "buildCommand": "npm run build:web",
-  "outputDirectory": "dist"
+  "buildCommand": "npx expo export -p web",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
