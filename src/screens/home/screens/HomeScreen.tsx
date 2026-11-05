@@ -15,6 +15,7 @@ import * as Clipboard from 'expo-clipboard';
 import { cleanAndSummarizeText } from '../../../core/api/geminiClient';
 import { showErrorToast } from '../../../core/utils/toast';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BrandLogo from '../../../components/BrandLogo';
 
 const countWords = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
 
@@ -75,6 +76,7 @@ const HomeScreen = () => {
                     keyboardShouldPersistTaps="handled"
                 >
                     <View style={styles.page}>
+                        <BrandLogo />
                         <View style={styles.intro}>
                             <Text style={[styles.title, isWideScreen && styles.wideTitle]}>
                                 Clear updates,{"\n"}
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
         lineHeight: 46,
     },
     titleAccent: {
-        color: '#51469C',
+        color: '#8A591E',
     },
     subtitle: {
         maxWidth: 520,
@@ -280,13 +282,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#B9B3D8',
+        borderColor: '#D5B98F',
         borderRadius: 8,
         paddingHorizontal: 12,
         marginLeft: 12,
     },
     copyButtonText: {
-        color: '#51469C',
+        color: '#754B1C',
         fontSize: 14,
         fontWeight: '600',
     },
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
     clearButtonText: {
-        color: '#51469C',
+        color: '#754B1C',
         fontSize: 14,
         fontWeight: '600',
     },
@@ -334,12 +336,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#51469C',
+        backgroundColor: '#8A591E',
         borderRadius: 8,
         paddingHorizontal: 16,
     },
     buttonDisabled: {
-        backgroundColor: '#6A6680',
+        backgroundColor: '#716B62',
     },
     buttonText: {
         color: '#FFFFFF',

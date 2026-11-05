@@ -11,6 +11,16 @@ export const cleanAndSummarizeText = async (rawText: string): Promise<CleanTextR
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: rawText }),
         });
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            return {
+                summary: '',
+                error: response.status === 200
+                    ? 'The local Expo web server does not run Vercel API functions. Use Vercel Dev to test summaries locally.'
+                    : `The summary API returned an unexpected response (HTTP ${response.status}).`,
+            };
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -28,7 +38,7 @@ export const cleanAndSummarizeText = async (rawText: string): Promise<CleanTextR
     } catch {
         return {
             summary: '',
-            error: 'Could not reach the summary service. Please try again.',
+            error: 'Could not reach /api/summarize. Expo web does not run Vercel API functions; use Vercel Dev locally.',
         };
     }
 };
