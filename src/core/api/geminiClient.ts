@@ -6,6 +6,8 @@ export interface CleanTextResponse {
     error?: string;
 }
 
+
+
 export const cleanAndSummarizeText = async (rawText: string): Promise<CleanTextResponse> => {
     if (!rawText.trim()) {
         return { summary: '', error: 'Please enter text to process.' };
@@ -22,7 +24,7 @@ export const cleanAndSummarizeText = async (rawText: string): Promise<CleanTextR
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: AI_TEXT_PARSER_PROMPT(rawText) }] }],
-                    generationConfig: { temperature: 0.1, maxOutputTokens: 5000 },
+                    generationConfig: { temperature: 0.1, maxOutputTokens: 7000 },
                 }),
             },
         );

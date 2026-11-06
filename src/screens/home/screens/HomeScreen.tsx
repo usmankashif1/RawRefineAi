@@ -14,14 +14,50 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { cleanAndSummarizeText } from '../../../core/api/geminiClient';
 import { showErrorToast } from '../../../core/utils/toast';
+import { RF, RH, RS, RW } from '../../../core/utils/responsive';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BrandLogo from '../../../components/BrandLogo';
+import { VoiceInputButton } from '../../../components/VoiceInputButton';
 
 const countWords = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
 
 const HomeScreen = () => {
     const { width } = useWindowDimensions();
     const isWideScreen = width >= 820;
+    const responsiveStyles = {
+        scrollContent: {
+            paddingHorizontal: Math.min(RW(20), 20),
+            paddingTop: Math.min(RH(28), 28),
+            paddingBottom: Math.min(RH(28), 28),
+        },
+        wideScrollContent: {
+            paddingHorizontal: Math.min(RW(32), 32),
+            paddingTop: Math.min(RH(40), 40),
+        },
+        intro: { marginBottom: Math.min(RS(24), 24) },
+        title: {
+            fontSize: Math.min(RF(32), 32),
+            lineHeight: Math.min(RF(38), 38),
+        },
+        wideTitle: {
+            fontSize: Math.min(RF(40), 40),
+            lineHeight: Math.min(RF(46), 46),
+        },
+        workspace: { gap: Math.min(RS(16), 16) },
+        panel: {
+            borderRadius: Math.min(RS(12), 12),
+            padding: Math.min(RS(18), 18),
+        },
+        panelHeader: { marginBottom: Math.min(RH(14), 14) },
+        textArea: {
+            minHeight: Math.min(RH(180), 180),
+            borderRadius: Math.min(RS(8), 8),
+            padding: Math.min(RS(14), 14),
+            fontSize: Math.min(RF(16), 16),
+            lineHeight: Math.min(RF(24), 24),
+        },
+        wideTextArea: { minHeight: Math.min(RH(230), 230) },
+    };
     const [inputText, setInputText] = useState('');
     const [result, setResult] = useState('');
     const [loading, setLoading] = useState(false);
@@ -29,6 +65,7 @@ const HomeScreen = () => {
     const [copied, setCopied] = useState(false);
     const inputWordCount = countWords(inputText);
     const resultWordCount = countWords(result);
+
 
     const handleProcessText = async () => {
         if (!inputText.trim()) return;
@@ -61,6 +98,22 @@ const HomeScreen = () => {
         }
     };
 
+
+
+
+    const handleTranscription = (transcribedText: string) => {
+        const transcript = transcribedText.trim();
+        if (!transcript) return;
+
+        setInputText(currentText =>
+            currentText.trim() ? `${currentText.trim()}\n${transcript}` : transcript,
+        );
+        setResult('');
+        setError('');
+        setCopied(false);
+    };
+
+
     return (
         <SafeAreaView style={styles.container}>
 
@@ -71,14 +124,23 @@ const HomeScreen = () => {
                 <ScrollView
                     contentContainerStyle={[
                         styles.scrollContent,
+                        responsiveStyles.scrollContent,
                         isWideScreen && styles.wideScrollContent,
+                        isWideScreen && responsiveStyles.wideScrollContent,
                     ]}
                     keyboardShouldPersistTaps="handled"
                 >
                     <View style={styles.page}>
                         <BrandLogo />
-                        <View style={styles.intro}>
-                            <Text style={[styles.title, isWideScreen && styles.wideTitle]}>
+                        <View style={[styles.intro, responsiveStyles.intro]}>
+                            <Text
+                                style={[
+                                    styles.title,
+                                    responsiveStyles.title,
+                                    isWideScreen && styles.wideTitle,
+                                    isWideScreen && responsiveStyles.wideTitle,
+                                ]}
+                            >
                                 Clear updates,{"\n"}
                                 <Text style={styles.titleAccent}>less busywork.</Text>
                             </Text>
@@ -87,17 +149,33 @@ const HomeScreen = () => {
                             </Text>
                         </View>
 
-                        <View style={[styles.workspace, isWideScreen && styles.wideWorkspace]}>
-                            <View style={styles.panel}>
-                                <View style={styles.panelHeader}>
-                                    <View>
+                        <View
+                            style={[
+                                styles.workspace,
+                                responsiveStyles.workspace,
+                                isWideScreen && styles.wideWorkspace,
+                            ]}
+                        >
+                            <View style={[styles.panel, responsiveStyles.panel]}>
+                                <View style={[styles.panelHeader, responsiveStyles.panelHeader]}>
+                                    <View style={styles.panelHeading}>
                                         <Text style={styles.panelTitle}>Draft update</Text>
                                         <Text style={styles.panelHint}>Paste notes or write a first draft</Text>
                                     </View>
                                 </View>
 
+                                <View style={styles.voiceInputRow}>
+                                    <Text style={styles.voiceInputHint}>Or dictate your update</Text>
+                                    <VoiceInputButton onTranscriptionComplete={handleTranscription} />
+                                </View>
+
                                 <TextInput
-                                    style={[styles.textArea, isWideScreen && styles.wideTextArea]}
+                                    style={[
+                                        styles.textArea,
+                                        responsiveStyles.textArea,
+                                        isWideScreen && styles.wideTextArea,
+                                        isWideScreen && responsiveStyles.wideTextArea,
+                                    ]}
                                     placeholder="Add meeting notes, progress, blockers, or next steps..."
                                     placeholderTextColor="#626B7D"
                                     multiline
@@ -129,6 +207,7 @@ const HomeScreen = () => {
                                             <Text style={styles.clearButtonText}>Clear draft</Text>
                                         </TouchableOpacity>
                                     ) : null}
+
                                     <TouchableOpacity
                                         style={[
                                             styles.button,
@@ -148,8 +227,8 @@ const HomeScreen = () => {
                                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
                             </View>
 
-                            <View style={[styles.panel, styles.outputPanel]}>
-                                <View style={styles.panelHeader}>
+                            <View style={[styles.panel, responsiveStyles.panel, styles.outputPanel]}>
+                                <View style={[styles.panelHeader, responsiveStyles.panelHeader]}>
                                     <View>
                                         <Text style={styles.panelTitle}>Team-ready summary</Text>
                                         <Text style={styles.panelHint}>Review before sharing with your team</Text>
@@ -264,6 +343,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 14,
+    },
+    panelHeading: {
+        flex: 1,
+        minWidth: 0,
+    },
+    voiceInputRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+        marginBottom: 12,
+    },
+    voiceInputHint: {
+        flex: 1,
+        color: '#535D70',
+        fontSize: 14,
     },
     panelTitle: {
         color: '#252A40',

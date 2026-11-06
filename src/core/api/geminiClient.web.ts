@@ -6,11 +6,13 @@ export const cleanAndSummarizeText = async (rawText: string): Promise<CleanTextR
     }
 
     try {
-        const response = await fetch('/api/summarize', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: rawText }),
-        });
+        const response = await fetch(
+            '/api/summarize',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: rawText }),
+            });
         const contentType = response.headers.get('content-type') || '';
         if (!contentType.includes('application/json')) {
             return {
