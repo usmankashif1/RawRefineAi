@@ -36,9 +36,9 @@ export default async function transcribe(
         return;
     }
 
-    const apiKey = process.env.EXPO_PUBLIC_GROQ_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-        console.error('EXPO_PUBLIC_GROQ_API_KEY is not configured.');
+        console.error('GROQ_API_KEY is not configured.');
         res.status(500).json({ error: 'The transcription service is not configured.' });
         return;
     }
